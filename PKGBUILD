@@ -1,6 +1,6 @@
 pkgname=qt6-qt5compat
-pkgver=6.9.2
-pkgrel=1
+pkgver=6.10.0
+pkgrel=2
 pkgdesc="Module that contains unsupported Qt 5 APIs"
 arch=('x86_64')
 url="https://www.qt.io"
@@ -19,14 +19,15 @@ depends=(
 )
 makedepends=(
     'cmake'
+    'git'
     'ninja'
     'qt6-qtdeclarative'
 )
-source=(https://download.qt.io/archive/qt/${pkgver%.*}/${pkgver}/submodules/${pkgname#*-}-everywhere-src-${pkgver}.tar.xz)
-sha256sums=(cb289905c689fc271ce783f8b67844040aa73d78f4f0cf8421fa713390a75b60)
+source=(git+https://code.qt.io/qt/${pkgname#*-}#tag=v${pkgver})
+sha256sums=(b99e86ed67aa627d77c184db279968fe3a2c4e46633ffff3461afb80c9c5ef2f)
 
 build() {
-    cd ${pkgname#*-}-everywhere-src-${pkgver}
+    cd ${pkgname#*-}
 
     local cmake_args=(
         -B flarebird-build
@@ -40,11 +41,10 @@ build() {
     cmake "${cmake_args[@]}"
 
     cmake --build flarebird-build
-
 }
 
 package() {
-    cd ${pkgname#*-}-everywhere-src-${pkgver}
+    cd ${pkgname#*-}
 
     DESTDIR=${pkgdir} cmake --install flarebird-build
 }
